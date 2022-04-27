@@ -29,17 +29,16 @@ var bucketParams = {
  });
 
 // Function that uploads object
-module.exports.uploadImage = async (data, fileName, category) => {
-
+module.exports.uploadImage = async (data, fileName, category, refID) => {
    switch (category) {
       case 'image':
-         fileName = "imagine/"+fileName;
+         fileName = refID+"/imagine/"+fileName;
          break;
       case 'signature':
-         fileName = 'signature/'+fileName;
+         fileName = refID+'/signature/'+fileName;
          break;
       case 'avatar':
-         fileName = 'avatar/'+fileName;
+         fileName = refID+'/avatar/'+fileName;
          break;
       default:
          console.log("Switch problems");
@@ -64,7 +63,6 @@ module.exports.uploadImage = async (data, fileName, category) => {
                if(err) {
                   reject(err);
                } else {
-                  // resizeImage(data.Location, fileName);
                   resolve(data.Location);
                }
             }
@@ -77,17 +75,17 @@ module.exports.uploadImage = async (data, fileName, category) => {
 }
 
 //Function that shows all images
-module.exports.showImages = async (category) => {
+module.exports.showImages = async (category, refID) => {
 
    switch (category) {
       case 'image':
-         Prefix = "imagine/";
+         Prefix = refID+"/imagine/";
          break;
       case 'signature':
-         Prefix = 'signature/';
+         Prefix = refID+'/signature/';
          break;
       case 'avatar':
-         Prefix = 'avatar/';
+         Prefix = refID+'/avatar/';
          break;
       default:
          console.log("Switch problems");
@@ -104,7 +102,12 @@ module.exports.showImages = async (category) => {
             reject(err);
          } else {
             console.log("Success", data);
-            resolve(data);
+            if(data.Contents.length <1 ){
+               let defaultMessage = "No "+ category+ " could be found with your parameters";
+               resolve(defaultMessage);
+            } else {
+               resolve(data);
+            }
          }
       })
    })
